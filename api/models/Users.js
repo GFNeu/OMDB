@@ -7,6 +7,10 @@ class User extends Model {
   hash(password, salt) {
     return bcrypt.hash(password, salt);
   }
+
+  getFavs(){
+    return this.getFilms()
+  }
 }
 
 User.init(
@@ -42,7 +46,8 @@ User.init(
             let lName = this.getDataValue('lastName')
             return fName + (mName? ` ${mName} ` : " ") + lName      
         }
-    }
+    },
+  
   },
   {
     sequelize, // We need to pass the connection instance

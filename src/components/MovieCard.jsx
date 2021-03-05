@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'
+import {addToFavorites, removeFromFavorites} from '../state/user'
+import {setModal} from '../state/modal'
 import { makeStyles } from '@material-ui/core/styles';
+import { useSnackbar } from 'notistack';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -9,7 +13,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import Checkbox from '@material-ui/core/Checkbox';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+
 
 const useStyles = makeStyles(theme=>({
   root: {
@@ -17,11 +23,14 @@ const useStyles = makeStyles(theme=>({
     flexDirection: "column",
     width: 170,
     justifyContent: "space-between",
-    border: "solid white 5px"
+    border: "solid white 5px",
+    '&:hover': {
+      boxShadow: theme.shadows[8]
+    }
   },
   link: {
     textDecoration: "none",
-    color: "black"
+    color: "black",
   },
   titleCont: {
     margin: 0,
@@ -41,17 +50,61 @@ const useStyles = makeStyles(theme=>({
     marginRight: 6,    
   },
   fav: {
-      padding: "0"
+      padding: "0",
+  },
+  icon: {
+    fontSize: 18,
+    heigth: "auto",
+    maxWidth: 80
   }
 }));
 
-export default function ImgMediaCard({movie}) {
+export default function ImgMediaCard({movie, fav = false}) {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
+  const [isFav, setIsFav] = useState(fav)
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user.id)
 
+  const handleFav = (e) => {
+    e.preventDefault()
+
+    if(!isFav){
+      dispatch(addToFavorites(movie.imdbID))
+      .then((data)=>{
+        if(data.payload.id) {
+          setIsFav(true)
+          enqueueSnackbar(`${movie.Title} was added to your favorites`, { variant: 'success', });
+        }
+      })
+      .catch(err=>{ 
+        dispatch(setModal({open: true, content: "login"}))
+        enqueueSnackbar('Please sign in to continue!')
+        console.log("ERROR!!!",err)
+      })
+    } else {
+      dispatch(removeFromFavorites(movie.imdbID))
+      .then((data)=>{
+        if(data.payload.id) {
+          setIsFav(false)
+          enqueueSnackbar(`${movie.Title} was removed from your favorites`, { variant: 'success', });
+        }
+      })
+      .catch(err=>{ 
+        dispatch(setModal({open: true, content: "login"}))
+        enqueueSnackbar('Please sign in to continue!')
+        console.log("ERROR!!!",err)
+      })
+    }
+  }
+
+  let tooltipLabel = user? "Mark as favorite" : "Log in to mark as favorite"
+  
   return (
     <Card className={classes.root}>
       <Link to={`/movies/${movie.imdbID}`} className={classes.link}>
         <CardActionArea>
+         
         <CardMedia
             component="img"
             alt={movie.Title}
@@ -71,9 +124,12 @@ export default function ImgMediaCard({movie}) {
       <Typography variant="body2" color="textSecondary" component="p">
             {movie.Year}
           </Typography>
+          <Tooltip title={isFav? "Unmark as favorite" : tooltipLabel} arrow>
+          <IconButton size="small" className={classes.fav} onClick={(e)=>handleFav(e)} name={movie.imdbID}>
+                {isFav? <Favorite color="secondary" className={classes.icon}/> : <FavoriteBorder className={classes.icon}/>}
+          </IconButton>
+          </Tooltip>
           
-            <Checkbox className={classes.fav} icon={<FavoriteBorder />} checkedIcon={<Favorite />} name="checkedH" size="small"/>
-           
 
       </CardActions>
     </Card>

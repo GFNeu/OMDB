@@ -2,7 +2,6 @@ const express = require("express");
 const helmet = require("helmet");
 const http = require("http");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const sessions = require("express-session");
 const passport = require("passport");
@@ -15,7 +14,7 @@ const app = express();
 
 const routes = require("./routes");
 const config = require("./config/server.config.js");
-const {User} = require("./models/index");
+const {User, Film} = require("./models/index");
 
 app.use(helmet());
 app.use(morgan('tiny'))
@@ -25,8 +24,8 @@ app.use(morgan('tiny'))
 //app.use(express.static(path.resolve(__dirname, "./src/public")));
 app.use(cors()); // esta librería es para poder trabajar front con back en localhost
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(
@@ -47,7 +46,7 @@ passport.use(
       passwordField: "password",
     },
     function (email, password, done) {
-      User.findOne({ where: { email } })
+      User.findOne({ where: { email }, include: Film})
         .then((user) => {
           if (!user) {
             // email not found
@@ -58,9 +57,9 @@ passport.use(
             if (hash !== user.password) {
               return done(null, false); // wrong password
             }
-
-            return done(null, user); // success :D
-          });
+            
+            return  done(null, user);// success :D
+          })
         })
         .catch(done); // done(err)
     }
@@ -68,15 +67,15 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
-  console.log("serialize", user)
+  console.log("--serialize--")
   done(null, user.id);
 });
 
 passport.deserializeUser(function (id, done) {
-  console.log("id deserialize", id)
-  User.findByPk(id)
+  console.log("--deserialize--")
+  User.findOne({where: {id}, include: Film})
     .then((user) => {
-      done(null, user);
+        done(null, user);
     })
     .catch(done);
 });

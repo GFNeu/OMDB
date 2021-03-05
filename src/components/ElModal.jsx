@@ -42,10 +42,10 @@ export default function ElModal() {
         }}
       >
         <Fade in={modal.open}>
-         <Paper elevation={3} >
-            {modal.content === "login" && <Login />}
+          <Paper elevation={3}>
+                  {modal.content === "login" && <Login />}
             {modal.content === "register" && <Register />}
-         </Paper>
+            </Paper>
         </Fade>
       </Modal>
     </div>

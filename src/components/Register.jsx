@@ -12,6 +12,7 @@ import graphic from '../assets/undraw_fill_forms_yltj.svg'
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
     boxSizing: "border-box",
@@ -112,22 +113,22 @@ const Register = () => {
 
     let disabled = (!allOk || loading)
     return (
-        <div className={classes.root}>
+        <div className={classes.root} >
             <Typography variant="h6" component="h4" className={classes.title}>
                 OMDB
             </Typography>
             <div><img src={graphic} className={classes.img} alt="register"/></div>
             <Typography variant="body1" component="h4" gutterBottom>
-                Sing up for <span className={classes.free}>free</span>!
+                Sign up for <span className={classes.free}>free</span>!
             </Typography>
             <Typography variant="caption" component="h6" gutterBottom>
                 We won't share your information with anyone in the world
             </Typography>
             <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                <NormalInput name="firstName" label="First name" confirmValue={confirmValue} validator={onlyRegularCharacters} validatorErrorMsg="Only letters are allowed" autoFocus fullWidth/>
+                <NormalInput name="email" label="Email" confirmValue={confirmValue} validator={isEmail} validatorErrorMsg="You must enter a valid email" autoFocus register/>
+                <NormalInput name="firstName" label="First name" confirmValue={confirmValue} validator={onlyRegularCharacters} validatorErrorMsg="Only letters are allowed"  fullWidth/>
                 <NormalInput name="middleName" label="Middle name" confirmValue={confirmValue} validator={onlyRegularCharacters} validatorErrorMsg="Only letters are allowed" allowNull/>
                 <NormalInput name="lastName" label="Last name" confirmValue={confirmValue} validator={onlyRegularCharacters} validatorErrorMsg="Only letters are allowed"/>
-                <NormalInput name="email" label="Email" confirmValue={confirmValue} validator={isEmail} validatorErrorMsg="You must enter a valid email"/>
                 <PasswordInput label="Password" name="password" confirmValue={confirmValue} validator={isValidPassword} />
                 <PasswordInput label="Verify your password" name="confirmPassword" confirmValue={confirmValue} validator={match} validatorErrorMsg="Your verification doesn't match your password" simple pass={form.password}/>
                 <Typography variant="caption" component="h6" className={classes.required}>

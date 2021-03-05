@@ -13,7 +13,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
 import UserMenu from '../components/AvatarMenu'
-
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,9 +25,16 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
     display: 'none',
+    fontSize: '2rem',
+    '&:hover':{
+     cursor: "pointer"
+    },
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
+  },
+  bar: {
+    backgroundColor: "#273169"
   },
   btn: {
       marginLeft: theme.spacing(3)
@@ -46,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
       width: 'auto',
     },
   },
+  
   searchIcon: {
     padding: theme.spacing(0, 2),
     height: '100%',
@@ -78,13 +86,31 @@ export default function SearchAppBar() {
   const showSearch = location.pathname !== '/home'
   const classes = useStyles();
   const dispatch= useDispatch();
-  const isLogedin = useSelector(state => state.user.isLogedin)
-  //const isLogedin = true
-
+  const user = useSelector(state => state.user)
+  let history = useHistory();
+  
+  const keyPress = (e)=> {
+    if(e.charCode === 13){
+       let query = e.target.value
+       console.log("location en keyPress",location)
+       if(location.pathname.split("?")[0] !== '/movies'){
+       history.push({
+        pathname: '/movies',
+        search: `${query}`,  // query string
+       })
+      } else {
+        history.push({
+          pathname: '/moviess',
+          search: `${query}`,  // query string
+         })
+      }
+    }
+ } 
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      {console.log("location en return",location)}
+      <AppBar position="static" className={classes.bar}>
         <Toolbar>
           <IconButton
             edge="start"
@@ -94,9 +120,10 @@ export default function SearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
+          <Typography className={classes.title} variant="h6" noWrap onClick={()=>history.push('/')}>
             OMDB
           </Typography>
+          
           {showSearch && (
             <div className={classes.search}>
               <div className={classes.searchIcon}>
@@ -109,10 +136,11 @@ export default function SearchAppBar() {
                 }}
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
+                onKeyPress={e=>keyPress(e)}
               />
             </div>
           )}
-          {isLogedin? 
+          {user.id? 
             <UserMenu /> 
             :
             <div>
@@ -121,7 +149,7 @@ export default function SearchAppBar() {
                 className={classes.btn}
                 onClick={() => dispatch(setModal({ open: true, content: "login" }))}
               >
-                Login
+                Log in
               </Button>
               <Button
                 color="secondary"

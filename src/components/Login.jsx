@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setModal } from '../state/modal';
 import { login } from '../state/user'
+import {useHistory} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -11,6 +12,7 @@ import PasswordInput from './PasswordInput'
 import Link from '@material-ui/core/Link';
 import graphic from '../assets/undraw_Access_account_re_8spm.svg'
 import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,10 +71,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = () => {
+    const history = useHistory()
+    const user = useSelector(state=> state.user)
     let classes = useStyles()
     const dispatch= useDispatch();
     let [allOk, setAllOk] = useState(false) 
     let [loading, setLoading] = useState(false)
+    let [wentWrong, setWentWrong] = useState(false)
     const [form, setForm] = React.useState({
         email: "",
         password: ""
@@ -92,20 +97,30 @@ const Login = () => {
         let someError = Object.values(form).includes("error") 
         let someEmpty = Object.values(form).some(i => i === "")
         someError || someEmpty ? setAllOk(false) : setAllOk(true) 
+        return()=>{}
     },[form, form.email, form.password, allOk])
 
       const handleSubmit = (event) => {
           event.preventDefault()
           setLoading(true)
           dispatch(login(form))
-            .then(()=>dispatch(setModal({open: false, content: ""})))
-            .catch((err)=> console.log(err))
+            .then(()=>{
+              if(!user.id){
+                setLoading(false)
+                setAllOk(false)
+                setWentWrong(true)
+              } else {
+                dispatch(setModal({open: false, content: ""}))
+                history.go(0)
+              }
+            })
+            .catch((err)=> console.log("ERROR LOG IN",err))
       }
   
 
     let disabled = (!allOk || loading)
     return (
-        <div className={classes.root} onSubmit={handleSubmit}>
+        <div className={classes.root} >
             <Typography variant="h6" component="h4" className={classes.title}>
                 OMDB
             </Typography>
@@ -113,7 +128,7 @@ const Login = () => {
             <Typography variant="body1" component="h4" gutterBottom>
                 Welcome back!
             </Typography>
-            <form className={classes.form} autoComplete="off">
+            <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                 <NormalInput name="email" label="Email" confirmValue={confirmValue} validator={isEmail} validatorErrorMsg="You must enter a valid email" autoFocus />
                 <PasswordInput label="Password" name="password" confirmValue={confirmValue} simple/>
                 <div className={classes.wrapper}>
@@ -126,6 +141,9 @@ const Login = () => {
             <Typography variant="body2" component="h6" >
                 Don't have an account? Register <Link href="/Register" onClick={changeModal}>here!</Link>
             </Typography>
+            {wentWrong && <Typography variant="body2" component="h6" color="secondary">
+                Log in failed beacuse of wrong credentials, please try again
+            </Typography>}
         </div>
     )
 }

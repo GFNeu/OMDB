@@ -8,8 +8,10 @@ const useStyles = makeStyles(theme=>({
     
       display: "flex",
       flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
       //width: 170,
-      height: 400,
+      height: "98%",
       border: "solid white 5px",
     },
   header: {
@@ -17,7 +19,7 @@ const useStyles = makeStyles(theme=>({
     display: "flex",
       flexDirection: "column",
       //width: 170,
-      height: 410,
+      height: "100%",
       flexGrow: 1,
       border: "solid white 5px",
       padding: theme.spacing(1)
@@ -39,12 +41,18 @@ const useStyles = makeStyles(theme=>({
   },
   ratingContainer: {
     boxSizing: "border-box",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     borderTop: "solid #e0e0e0 1px",
-    marginTop: theme.spacing(7),
-    paddingTop: theme.spacing(3),
+    //borderBottom: "solid #e0e0e0 1px",
+    marginTop: theme.spacing(1),
+    paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
-    maxHeight: 50,
-    marginBottom: theme.spacing(2)
+    maxHeight: "50%",
+    flexShrink: 2
+   //marginBottom: theme.spacing(2),
+    
   },
   rating1: {
     display: "flex",
@@ -58,7 +66,7 @@ const useStyles = makeStyles(theme=>({
     borderLeft: "solid #e0e0e0 1px",
   },
   ratingLogo: {
-    width: "auto",
+    width: "%1",
     height: "auto",
     maxHeight: 35
   },

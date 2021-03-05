@@ -7,6 +7,8 @@ import Home from './Home'
 import Movies from './Movies'
 import SingleMovie from './SingleMovie'
 import ElModal from '../components/ElModal'
+import UserFavs from './UserFavs'
+
 
 const Main = () => {
     const dispatch = useDispatch()
@@ -19,8 +21,10 @@ const Main = () => {
             <AppBar />
             <Switch>
                 <Route exact path="/home" render={() => <Home /> } />
-                <Route exact path="/movies" render={() => <Movies /> } />
+                <Route exact path="/movies" render={() => <Movies /> } /> {/* Para la búsqueda desde home */}
+                <Route exact path="/moviess" render={() => <Movies /> } /> {/* para labúsqueda desde appBar */}
                 <Route path="/movies/:id" render={({ match }) => <SingleMovie id={match.params.id}/> } />
+                <Route path="/user/favs" render={() => <UserFavs />}/>
                 <Redirect from="/" to="/home" />
             </Switch>
             <ElModal />

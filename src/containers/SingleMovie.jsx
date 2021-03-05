@@ -107,6 +107,7 @@ const SingleMovie = ({id}) => {
                         {loading ? <Skeleton /> : movie.Ratings[2].Value}
                     </Typography>
                 </Grid>
+                
                 <Grid item></Grid>
                 <Grid item></Grid>
               </Grid>
@@ -114,10 +115,10 @@ const SingleMovie = ({id}) => {
           </Grid>
           <Grid container item xs={12} md={3}>
               <Grid item lg={12}>
-                <Paper elevation={1}>ADD TO FAVOURITES</Paper>
+                <Paper elevation={1}>ADD TO FAVORITES</Paper> {/* //COMPLETAR--------------**************** */}
               </Grid>
               <Grid item xs={false} md={12}>
-                <Paper elevation={1}>Similar movies</Paper>
+                <Paper elevation={1}>Similar movies</Paper> {/* /COMPLETAR---------------***************** */}
               </Grid>
           </Grid>
           <Grid item xs={12} md={9}>

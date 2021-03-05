@@ -1,6 +1,8 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import {logout} from '../state/user'
+import {useHistory} from 'react-router-dom';
+import { setModal } from '../state/modal';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import { deepOrange } from '@material-ui/core/colors';
@@ -30,12 +32,13 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const AvatarMenu = () => {
+  
     const [anchorEl, setAnchorEl] = useState(null)
-    const user = useSelector(state => state.user.userData)
+    const user = useSelector(state => state.user)
     const dispatch = useDispatch()
-    console.log("avatar",user)
     const classes = useStyles();
-
+    const history = useHistory()
+    
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
       };
@@ -46,10 +49,14 @@ const AvatarMenu = () => {
 
     const handleFav = () => {
         setAnchorEl(null);
+        history.push('/user/favs')
     };
 
     const handleLogout = () => {
-        dispatch(logout()).then(()=>setAnchorEl(null))
+        dispatch(logout()).then(()=>{
+          setAnchorEl(null)
+          history.go(0)
+        })
     };
 
     const handleClose = () => {
@@ -62,6 +69,10 @@ const AvatarMenu = () => {
           setAnchorEl(null);
         }
       }
+
+      useEffect(()=>{
+        dispatch(setModal({open: false, content: ""}))
+      },[])
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
@@ -100,7 +111,7 @@ const AvatarMenu = () => {
               onKeyDown={handleListKeyDown}
             >
               <MenuItem onClick={handleAccount} name="account"><AccountCircleIcon className={classes.littleMargin}/> Profile</MenuItem>
-              <MenuItem onClick={handleFav} name="fav"><FavoriteBorderIcon className={classes.littleMargin}/>My favourites</MenuItem>
+              <MenuItem onClick={handleFav} name="fav"><FavoriteBorderIcon className={classes.littleMargin}/>My favorites</MenuItem>
               <MenuItem onClick={handleLogout} name="logout"><PowerSettingsNewIcon className={classes.littleMargin}/>Logout</MenuItem>
             </MenuList>
           </Paper>

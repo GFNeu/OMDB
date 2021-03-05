@@ -113,14 +113,13 @@ const SingleMovie = ({id}) => {
               </Grid>
             </Paper>
           </Grid>
-          <Grid container item xs={12} md={3}>
+         {/*  <Grid container item xs={12} md={3}>
               <Grid item lg={12}>
-                <Paper elevation={1}>ADD TO FAVORITES</Paper> {/* //COMPLETAR--------------**************** */}
-              </Grid>
+                <Paper elevation={1}>ADD TO FAVORITES</Paper> 
               <Grid item xs={false} md={12}>
-                <Paper elevation={1}>Similar movies</Paper> {/* /COMPLETAR---------------***************** */}
+                <Paper elevation={1}>Similar movies</Paper> 
               </Grid>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} md={9}>
             <Paper elevation={1} className={classes.plot}>
               <Typography variant="h5" component="h2">
